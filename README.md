@@ -1,4 +1,4 @@
-# Caenorhabditis elegans Survival Comparison Analysis
+# Caenorhabditis elegans Survival Comparison Analysis (under construction)
 
 ## Description
 This repository contains R source code and data for replicating the analysis described in the article "A New Survival Comparison Procedure Designed to Study the Caenorhabditis elegans Model." The analysis focuses on comparing survival rates using a novel procedure specifically designed for the Caenorhabditis elegans model.
