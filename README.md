@@ -83,7 +83,7 @@ When using the scripts with a new dataset, ensure that you correctly modify the 
 
 <sup>0</sup> *Do not modify unless necessary.* 
 
-<sup>1</sup> *Make sure to set this option to the correct directory to avoid errors.* 
+<sup>1</sup> *Make sure to correctly set this option to avoid errors.* 
 
 <sup>2</sup> *Default values recommended. Other possibilities not yet implemented or not implemented anymore.*
 
