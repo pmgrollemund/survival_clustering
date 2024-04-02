@@ -82,8 +82,10 @@ When using the scripts with a new dataset, ensure that you correctly modify the 
 - `"folder_path"`: Path where analysis results will be saved.
 
 <sup>0</sup> *Do not modify unless necessary.* 
+
 <sup>1</sup> *Make sure to set this option to the correct directory to avoid errors.* 
-<sup>2</sup> **Default values recommended. Other possibilities not yet implemented or not implemented anymore.**
+
+<sup>2</sup> *Default values recommended. Other possibilities not yet implemented or not implemented anymore.*
 
 ## Data
 Please note that the dataset included in this repository is a reduced and anonymized version of the actual data used for the article. 
