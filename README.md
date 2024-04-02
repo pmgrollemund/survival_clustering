@@ -54,32 +54,32 @@ When using the scripts with a new dataset, ensure that you correctly modify the 
 
 ### Understanding Options
 #### For `options.json`:
-- `"wd"`: Working directory for R (the root directory of this Git repository).<sup>1</sup>
-- `"verbose"`: Indicates whether the scripts should display information.
-- `"script_functions"`: Path to an R script containing necessary functions for the procedure.<sup>0</sup>
-- `"choice_functions"`: Path to an R script for assigning appropriate functions based on user choices in the options file.<sup>0</sup>
-- `"error_distribution_file"`: Contains the result of the `Variability.R` function that analyzes counting error variability.<sup>0</sup>
-- `"type_data"`: Specifies the file extension of the data file.<sup>2</sup>
-- `"type_transformation"` and `"type_pretreatment"`: Indicate data preprocessing methods.<sup>2</sup>
-- `"n_cut"`: Number of periods to segment the time domain of survival curves. 
-- `"n_functional_base"`: Number of basis functions to use for the B-spline basis.
-- `"simulation"`: Indicates whether to use simulated data.
-- `"simulated_data.time_number"`: Number of evaluation time points for simulated data.
-- `"alpha_simulated_data"`: Transparency level of simulated data in graphical results.
-- `"type_clust"`: Method of clustering for functional data. <sup>2</sup>
-- `"criteria_funFEM"`: Criterion for selecting the best modeling of clustered survival data. <sup>2</sup>
-- `"n_rep"`: Number of repetitions for clustering method.
-- `"min_K"` and `"max_K"`: Minimum and maximum number of groups to consider for clustering.
+- `wd`: Working directory for R (the root directory of this Git repository).<sup>1</sup>
+- `verbose`: Indicates whether the scripts should display information.
+- `script_functions`: Path to an R script containing necessary functions for the procedure.<sup>0</sup>
+- `choice_functions`: Path to an R script for assigning appropriate functions based on user choices in the options file.<sup>0</sup>
+- `error_distribution_file`: Contains the result of the `Variability.R` function that analyzes counting error variability.<sup>0</sup>
+- `type_data`: Specifies the file extension of the data file.<sup>2</sup>
+- `type_transformation` and `type_pretreatment`: Indicate data preprocessing methods.<sup>2</sup>
+- `n_cut`: Number of periods to segment the time domain of survival curves. 
+- `n_functional_base`: Number of basis functions to use for the B-spline basis.
+- `simulation`: Indicates whether to use simulated data.
+- `simulated_data.time_number`: Number of evaluation time points for simulated data.
+- `alpha_simulated_data`: Transparency level of simulated data in graphical results.
+- `type_clust`: Method of clustering for functional data. <sup>2</sup>
+- `criteria_funFEM`: Criterion for selecting the best modeling of clustered survival data. <sup>2</sup>
+- `n_rep`: Number of repetitions for clustering method.
+- `min_K` and `max_K`: Minimum and maximum number of groups to consider for clustering.
 
 
 #### For `specific_options_test.json`:
-- `"data_file"`: Path to the file containing the dataset.<sup>1</sup>
-- `"sheet"`: Name of the sheets to import.<sup>1</sup>
-- `"control_file"`: Path to the file containing control group data. If the same as `"data_file"`, use "same".<sup>1</sup>
-- `"control_sheets"`: Sheets corresponding to the control group.<sup>1</sup>
-- `"treat_group"`: Sheets related to different experimental conditions.<sup>1</sup>
-- `"treat_names"`: Names assigned to each experimental condition.<sup>1</sup>
-- `"folder_path"`: Path where analysis results will be saved.
+- `data_file`: Path to the file containing the dataset.<sup>1</sup>
+- `sheet`: Name of the sheets to import.<sup>1</sup>
+- `control_file`: Path to the file containing control group data. If the same as `data_file`, use "same".<sup>1</sup>
+- `control_sheets`: Sheets corresponding to the control group.<sup>1</sup>
+- `treat_group`: Sheets related to different experimental conditions.<sup>1</sup>
+- `treat_names`: Names assigned to each experimental condition.<sup>1</sup>
+- `folder_path`: Path where analysis results will be saved.
 
 <sup>0</sup> *Do not modify unless necessary.* 
 
