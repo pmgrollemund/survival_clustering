@@ -1,0 +1,22 @@
+{
+ "folder_path":"../../results/article_Poupet_OP-time_24",
+
+"data_file":"../../data/Poupet_2023-03-28/data_curatif_preventif.xlsx",
+ "sheet":["CAA",
+          "curatif_Lcr_CAA2","curatif_Lcr_CAA4","curatif_Lcr_CAA6","curatif_Lcr_CAA24",
+          "curatif_OP_CAA2","curatif_OP_CAA4","curatif_OP_CAA6","curatif_OP_CAA24",
+          "preventif_Lcr_CAA2","preventif_Lcr_CAA4","preventif_Lcr_CAA6","preventif_Lcr_CAA24",
+          "preventif_OP_CAA2","preventif_OP_CAA4","preventif_OP_CAA6","preventif_OP_CAA24",
+          "OP2","OP4","OP6","OP24","Lcr2","Lcr4","Lcr6","Lcr24"],
+ 
+ "sheet_temoin":"CAA",
+ "temoins_file":"../../data/Poupet_2023-03-28/data_curatif_preventif.xlsx",
+ "sheet_temoins":["CAA"],
+ 
+ "same_mol":[["CAA"],
+             ["curatif_OP_CAA2","preventif_OP_CAA2"],
+             ["curatif_OP_CAA4","preventif_OP_CAA4"],
+             ["curatif_OP_CAA6","preventif_OP_CAA6"],
+             ["curatif_OP_CAA24","preventif_OP_CAA24"]],
+ "mol_names":["Temoin","OP_2","OP_4","OP_6","OP_24"]
+}

@@ -1,0 +1,16 @@
+{ 
+ "data_file":"../data/data_test.xlsx",
+ "sheet":["control_group1","control_group2",
+          "treat1_concentration1","treat1_concentration2","treat1_concentration3",
+          "treat2_concentration1","treat2_concentration2"],
+ 
+ "control_file":"same",
+ "control_sheets":["control_group1","control_group2"],
+ 
+ "treat_group":[["control_group1","control_group2"],
+            ["treat1_concentration1","treat1_concentration2","treat1_concentration3"],
+            ["treat2_concentration1","treat2_concentration2"]],
+ "treat_names":["Control","treat1","treat2"],
+ 
+ "folder_path":"../results/survival_clustering"
+}

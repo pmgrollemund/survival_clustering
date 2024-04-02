@@ -1,0 +1,31 @@
+{
+    "wd":"/home/pmgrolle/Documents/MCF/Recherche/UMRF/Elegans/Survival_classification/code/classification/",
+ "verbose":true, 
+ 
+"script_functions":"./scripts/functions.R",
+"choice_functions":"./scripts/functions_choice.R",
+
+"ecart_type_file":"./src/params_simul_EC.RData",
+"ecart_distribution_file":"./src/params_simul_PMG.RData",
+
+"type_data":"excel",
+"type_newdata":"seq",
+"type_transformation":"ecart",
+
+"n_cut":4,
+ 
+ "length_newdata":1e2,
+ "type_pretreatment":"Splines",
+ "type_param":"Weibull",
+ 
+ "simulation":"TRUE",
+ "n_simul":100,
+ "alpha_sim":0.15,
+ 
+ "type_clust":"funFEM",
+ "criteria_funFEM":"ICL",
+ "nfunFEM":10,
+ "min_K":2,
+ "max_K":5,
+ "nbase":50
+}

@@ -1,0 +1,27 @@
+{
+ "wd":"/home/pmgrolle/Documents/MCF/Recherche/UMRF/Elegans/Survival_classification/git_survival_clustering/survival_classification/", 
+ "verbose":true, 
+ 
+ "script_functions":"./scripts/functions.R",
+ "choice_functions":"./scripts/functions_choice.R",
+
+ "error_distribution_file":"./src/error_distribution.RData",
+
+ "type_data":"xlsx",
+ "type_transformation":"deviance",
+ "type_pretreatment":"spline",
+
+ "n_cut":4,
+ "n_functional_base":50, 
+ 
+ "simulation":true,
+ "n_simulated_data":5,
+ "simulated_data.time_number":1e2,
+ "alpha_simulated_data":0.15,
+ 
+ "type_clust":"funFEM",
+ "criteria_funFEM":"ICL",
+ "n_rep":10,
+ "min_K":2,
+ "max_K":5
+}

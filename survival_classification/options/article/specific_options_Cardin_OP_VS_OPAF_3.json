@@ -1,0 +1,28 @@
+{
+    "folder_path":"../../results/article_Cardin_OP_VS_OPAF_3",
+    
+    "data_file":"../../data/Cardin_2023-07-10/data_cardin.xlsx",
+    "sheet":["OP50","OP50AF",
+             "Fromage_5",
+             "Residu_5",
+             "Lipides_1","Lipides_5",
+             "Ethanol_1","Ethanol_5",
+             "Extrait_40_delip_5","Extrait_40_delip_10","Extrait_40_delip_20",
+             "Extrait_40_serie_5","Extrait_40_serie_10","Extrait_40_serie_20",
+             "Extrait_70_5","Extrait_70_10","Extrait_70_20"],
+    
+    "sheet_temoin":"OP50",
+    "temoins_file":"../../data/Cardin_2023-07-10/data_cardin.xlsx",
+    "sheet_temoins":["OP50"],
+    
+    "same_mol":[["OP50"],
+                ["OP50AF"],
+               ["Fromage_5"],
+               ["Residu_5"],
+               ["Lipides_1","Lipides_5"],
+               ["Ethanol_1","Ethanol_5"],
+               ["Extrait_40_delip_5","Extrait_40_delip_10","Extrait_40_delip_20"],
+               ["Extrait_40_serie_5","Extrait_40_serie_10","Extrait_40_serie_20"],
+               ["Extrait_70_5","Extrait_70_10","Extrait_70_20"]],
+    "mol_names":["Control","OP50AF","Fromage","Residu","Lipide","Ethanol","Extrait_40_delip","Extrait_40_serie","Extrait_70"]
+   }
