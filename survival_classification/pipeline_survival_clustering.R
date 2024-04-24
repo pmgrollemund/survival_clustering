@@ -23,8 +23,10 @@ suppressPackageStartupMessages(library(tictoc))
 
 ## Get shell options (manual) ----
 args <- commandArgs(trailingOnly=TRUE)
-setwd("~/Documents/MCF/Recherche/UMRF/Elegans/Survival_classification/git_survival_clustering/survival_classification/")
-args <- c("./options/options.json","./options/specific_options_test.json")
+# setwd("~/Documents/MCF/Recherche/UMRF/Elegans/Survival_classification/git_survival_clustering/survival_classification/")
+# args <- c("./options/options.json","./options/specific_options_test.json")
+# setwd("~/Documents/MCF/Recherche/UMRF/Elegans/Survival_classification/git_survival_clustering/survival_classification/")
+# args <- c("./options/options_article.json","./options/article/specific_options_Cardin_OP_VS_OPAF_3.json")
 if(length(args)>1){
   # general options
   json_file <- args[1]
@@ -123,7 +125,7 @@ if(verbose) cat(task,"Compute clusters \n")
 data_cluster <- do_clustering(data_transformed)
 
 if(verbose) cat(task,"Compute clusters probabilities \n")
-final_data <- Proba_cluster(data_cluster)
+final_data <- Proba_cluster(data_cluster,threshold_deviance)
 
 #### Post-process ----
 if(verbose) cat(section,"Post-process \n")
@@ -136,9 +138,9 @@ compute_graphical_output()
 if(verbose) cat(section,"Ending \n")
 if(verbose) cat(task,"Save \n")
 Path <- paste(results_path,"/Param_curves.RData",sep="") 
+Path_image <- paste(results_path,"/Renv.RData",sep="") 
 save(data_pretreated, final_data, file = Path)
+save.image(file = Path_image)
 
 if(verbose) cat(task,"Clean up \n")
-invisible(file.remove(Clustering_path))
-invisible(file.remove(Proba_path))
 rm(list=ls())

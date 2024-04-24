@@ -784,11 +784,11 @@ funFEM_ICL <- function(data){
 }
 
 #### Compute_proba ----
-Pb_funFEM <- function(Data){
+Pb_funFEM <- function(Data,threshold_deviance){
   # Initialize ad load required object
   load(Clustering_path)
-  threshold_deviance <- 0.01
-  threshold_deviance2 <- 0.15
+  # threshold_deviance <- 0.01
+  threshold_deviance <- 0.15
   
   # Define Cond
   my_Wells <- unique(Data$Wells)
@@ -852,7 +852,7 @@ Pb_funFEM <- function(Data){
     }
   }
   
-  number_sign <- floor(means / threshold_deviance2)
+  number_sign <- floor(means / threshold_deviance)
   
   symbol_sign <- sign(number_sign)
   symbol_sign[symbol_sign == -1] <- "-"

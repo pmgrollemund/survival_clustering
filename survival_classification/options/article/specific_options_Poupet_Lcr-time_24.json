@@ -18,5 +18,6 @@
              ["curatif_Lcr_CAA4","preventif_Lcr_CAA4"],
              ["curatif_Lcr_CAA6","preventif_Lcr_CAA6"],
              ["curatif_Lcr_CAA24","preventif_Lcr_CAA24"]],
- "mol_names":["Temoin","Lcr_2","Lcr_4","Lcr_6","Lcr_24"]
+ "mol_names":["Temoin","Lcr_2","Lcr_4","Lcr_6","Lcr_24"],
+ "threshold_deviance":0.15
 }
