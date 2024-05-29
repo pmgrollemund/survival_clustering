@@ -1,0 +1,18 @@
+	 Condition to remove: none.
+ 
+	 Control condition: 
+		CTRL
+
+	 Conditions to compare to the control group: 
+		cond_A 
+		cond_B 
+		cond_C 
+		cond_D 
+		cond_E 
+		cond_F 
+		cond_G 
+		
+
+	 No pairwise comparison, since less than 2 condition have the value '1' in the column 'Statut2_Condition' of the sheet 'Initialisation'.
+
+

@@ -1,0 +1,84 @@
+
+/------------------------- cond_A <<--->> CTRL ------------------------\
+Call:
+survdiff(formula = Surv(Duree_de_Vie, Statut) ~ Souche, data = data_comparison)
+
+                N Observed Expected (O-E)^2/E (O-E)^2/V
+Souche=cond_A 190      190      278      27.9      96.3
+Souche=CTRL   244      244      156      49.8      96.3
+
+ Chisq= 96.3  on 1 degrees of freedom, p= <2e-16 
+\----------------------------------------------------------------------/
+
+
+/------------------------- cond_B <<--->> CTRL ------------------------\
+Call:
+survdiff(formula = Surv(Duree_de_Vie, Statut) ~ Souche, data = data_comparison)
+
+                N Observed Expected (O-E)^2/E (O-E)^2/V
+Souche=cond_B 211      211      305      29.0       109
+Souche=CTRL   244      244      150      58.9       109
+
+ Chisq= 109  on 1 degrees of freedom, p= <2e-16 
+\----------------------------------------------------------------------/
+
+
+/------------------------- cond_C <<--->> CTRL ------------------------\
+Call:
+survdiff(formula = Surv(Duree_de_Vie, Statut) ~ Souche, data = data_comparison)
+
+                N Observed Expected (O-E)^2/E (O-E)^2/V
+Souche=cond_C 279      279      352      15.3      56.2
+Souche=CTRL   244      244      171      31.6      56.2
+
+ Chisq= 56.2  on 1 degrees of freedom, p= 6e-14 
+\----------------------------------------------------------------------/
+
+
+/------------------------- cond_D <<--->> CTRL ------------------------\
+Call:
+survdiff(formula = Surv(Duree_de_Vie, Statut) ~ Souche, data = data_comparison)
+
+                N Observed Expected (O-E)^2/E (O-E)^2/V
+Souche=cond_D 258      258      323      13.1      43.6
+Souche=CTRL   244      244      179      23.6      43.6
+
+ Chisq= 43.6  on 1 degrees of freedom, p= 4e-11 
+\----------------------------------------------------------------------/
+
+
+/------------------------- cond_E <<--->> CTRL ------------------------\
+Call:
+survdiff(formula = Surv(Duree_de_Vie, Statut) ~ Souche, data = data_comparison)
+
+                N Observed Expected (O-E)^2/E (O-E)^2/V
+Souche=cond_E 151      151      220      21.9      60.4
+Souche=CTRL   244      244      175      27.7      60.4
+
+ Chisq= 60.4  on 1 degrees of freedom, p= 8e-15 
+\----------------------------------------------------------------------/
+
+
+/------------------------- cond_F <<--->> CTRL ------------------------\
+Call:
+survdiff(formula = Surv(Duree_de_Vie, Statut) ~ Souche, data = data_comparison)
+
+                N Observed Expected (O-E)^2/E (O-E)^2/V
+Souche=cond_F 217      217      253      5.12      13.3
+Souche=CTRL   244      244      208      6.23      13.3
+
+ Chisq= 13.3  on 1 degrees of freedom, p= 3e-04 
+\----------------------------------------------------------------------/
+
+
+/------------------------- cond_G <<--->> CTRL ------------------------\
+Call:
+survdiff(formula = Surv(Duree_de_Vie, Statut) ~ Souche, data = data_comparison)
+
+                N Observed Expected (O-E)^2/E (O-E)^2/V
+Souche=cond_G 167      167      220      12.9      34.1
+Souche=CTRL   244      244      191      14.9      34.1
+
+ Chisq= 34.1  on 1 degrees of freedom, p= 5e-09 
+\----------------------------------------------------------------------/
+
