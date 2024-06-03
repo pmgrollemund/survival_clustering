@@ -144,8 +144,8 @@ SurvPlot<-function(pv, fit, title, legendsTitle, legendsLabs, palette, xlim, bre
                 pval.coord = c(xlim/2, 0.9),
                 conf.int = FALSE,
                 title = title,
-                xlab = "Time (Days)",
-                ylab = "Survival probability",
+                xlab = "Temps (jours)",
+                ylab = "Probabilité de survie",
                 surv.median.line = 'hv',
                 ggtheme = theme_bw(),
                 legend.title = legendsTitle,
@@ -398,10 +398,10 @@ for(condition in condition_to_validate){
                                         palette = palette,
                                         title = paste(condition,": Replicas validation"),
                                         conf.int = FALSE,
-                                        xlab = "Time (Days)",
+                                        xlab = "Temps (jours)",
                                         legend.title = "Removed : red",
                                         # legend.labs = c("Removed","Keep"),
-                                        ylab = "Survival probability",
+                                        ylab = "Probabilité de survie",
                                         ggtheme = theme_bw(),
                                         xlim=c(0,time_max),
                                         break.time.by= 2,
@@ -472,8 +472,8 @@ for(condition in conditions_to_treat){
                                           palette = palette,
                                           pval.coord = c(time_max/2, 0.9),
                                           conf.int = FALSE,
-                                          xlab = "Time (Days)",
-                                          ylab = "Survival probability",
+                                          xlab = "Temps (jours)",
+                                          ylab = "Probabilité de survie",
                                           ggtheme = theme_bw(),
                                           xlim=c(0,time_max),
                                           break.time.by= 2,
@@ -532,10 +532,8 @@ other_conditions <- init$Nom_Condition[init$Statut1_Condition == 1]
 n_caractere_control <- 
   length(unlist(strsplit(control_condition,split="")))
 
-# Define an object to save the pvale codes
-pval_codes <- data.frame(condition = init$Nom_Condition[init$Nom_Condition %in% other_conditions])
-pval_codes$pval_code <- rep(NA,nrow(pval_codes))
-pval_codes$sample_size_condition <- rep(NA,nrow(pval_codes))
+# Determine the color of the control group 
+control_color <- init$Couleur_Condition[init$Statut1_Condition == "t"]
 
 # For each comparison "group x control-group" ----
 for(condition in other_conditions){
@@ -563,79 +561,54 @@ for(condition in other_conditions){
     cat("\\",rep("-",70),"/\n\n",sep="")
   }
   
-  
-  # Paste sample size and pvalue code to labels
-  sample_size_condition <- nrow(data_comparison[data_comparison$Souche == condition,])
-  pval <- survdiff(formula=Surv(Duree_de_Vie, Statut)~Souche, data=data_comparison)
-  pval_code <- get_pvalue_code(pval$pvalue)
-  
-  pval_codes$pval_code[pval_codes$condition == condition] <- pval_code
-  pval_codes$sample_size_condition[pval_codes$condition == condition] <- sample_size_condition
-  
-  # Get label and color with the same order as in init sheet
-  color_labels_order <- 
-    init[init$Nom_Condition %in% c(control_condition,condition),c("Nom_Condition","Couleur_Condition")]
-  labels_order <- color_labels_order$Nom_Condition
-  palette <- color_labels_order$Couleur_Condition
-  
-  # Paste sample size and pvalue code to labels
-  labels_order[labels_order != control_condition] <- 
-    paste(labels_order[labels_order != control_condition], 
-          " (n=",sample_size_condition,") ",pval_code,sep="")
-  
   # Fit the condition comparison
-  data_comparison$Souche[data_comparison$Souche %in% condition] <- labels_order[labels_order != control_condition]
-  data_comparison$Souche <- factor(data_comparison$Souche,levels=labels_order)
   fit <- survfit(Surv(Duree_de_Vie, Statut)~Souche, data=data_comparison)
   time_max <- max(data_comparison$Duree_de_Vie,na.rm=T)
   title <- paste(condition, " x ",control_condition,sep="")
   
+  color <- init$Couleur_Condition[init$Nom_Condition == condition]
+  palette <- c(color,control_color)
+  
+  labels <- c(condition,control_condition)
+  palette <- palette[order(labels)]
+  labels <- sort(labels)
+  
   # Plot the survival curves
   survival_comparison <- 
-    SurvPlot(TRUE, fit, title,"Condition", labels_order, palette, time_max, 2)
+    SurvPlot(TRUE, fit, title,"Condition", labels, palette, time_max, 2)
   
   # Save the plot
   file_name <- paste("Control_comparison_",condition,".pdf",sep="")
   suppressWarnings(suppressMessages(ggsave(plot=survival_comparison$plot,device = "pdf",
                                            filename = file.path(comparison_output_dir,
                                                                 file_name))))
+  
 }
 
 # Save messages about control comparison ----
 write(message_control_comparison,file.path(comparison_output_dir,"Control_comparison.txt"))
 
-
-# Get label and color with the same order as in init sheet
-color_labels_order <- init[init$Nom_Condition %in% data$Souche,c("Nom_Condition","Couleur_Condition")]
-labels_order <- color_labels_order$Nom_Condition
-palette <- color_labels_order$Couleur_Condition
-
-# Paste sample size and pvalue code to labels
-labels_order[labels_order != control_condition] <- 
-  paste(labels_order[labels_order != control_condition], 
-        " (n=",pval_codes$sample_size_condition,") ",pval_codes$pval_code,sep="")
-color_labels_order$new_label <- labels_order
-
 # Compare all conditions to control group ----
-data_tmp <- data
-for(condition in other_conditions)
-  data_tmp$Souche[data$Souche %in% condition] <- color_labels_order$new_label[color_labels_order$Nom_Condition==condition]
-data_tmp$Souche <- factor(data_tmp$Souche,levels=labels_order)
-fit <- survfit(Surv(Duree_de_Vie, Statut)~Souche, data=data_tmp)
-time_max <- max(data_tmp$Duree_de_Vie,na.rm=T)
-title <- "All conditions"
+fit <- survfit(Surv(Duree_de_Vie, Statut)~Souche, data=data)
+time_max <- max(data$Duree_de_Vie,na.rm=T)
+title <- "All condition"
+
+labels <- init$Nom_Condition[init$Statut1_Condition != 0]
+palette <- init$Couleur_Condition[init$Statut1_Condition != 0]
+palette <- palette[order(labels)]
+labels <- sort(labels)
 
 # Plot the survival curves ----
 survival_comparison <- ggsurvplot(fit,
-                                  legend=c(0.85,0.65),
+                                  legend="right",
                                   title = title,
                                   palette=palette,
                                   pval.coord = c(time_max/2, 0.9),
                                   conf.int = FALSE,
-                                  xlab = "Time (Days)",
-                                  ylab = "Survival probability",
+                                  xlab = "Temps (jours)",
+                                  ylab = "Probabilité de survie",
                                   legend.title = "Condition",
-                                  legend.labs = labels_order,
+                                  legend.labs = levels(as.factor(data$Souche)),
                                   ggtheme = theme_bw(),
                                   xlim=c(0,time_max),
                                   surv.median.line = 'hv',
@@ -660,18 +633,16 @@ message_control_comparison <- NULL
 other_conditions <- init$Nom_Condition[
   init$Statut2_Condition == 1 & init$Statut1_Condition == 1
   ]
-new_other_conditions <- color_labels_order$new_label[color_labels_order$Nom_Condition %in% other_conditions]
 
 if(length(other_conditions) > 1){
   # For each comparison "group x other group"
   for(i in 1:(length(other_conditions)-1)){
     condition1 <- other_conditions[i]
-    new_condition1 <- new_other_conditions[i]
     for(j in (i+1):length(other_conditions)){
       condition2 <- other_conditions[j]
-      new_condition2 <- new_other_conditions[j]
       
       data_comparison <- data[data$Souche %in% c(condition1,condition2),]
+      
       
       n_caractere1 <- 
         length(unlist(strsplit(condition1,split="")))
