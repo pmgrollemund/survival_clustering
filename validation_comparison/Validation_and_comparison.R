@@ -421,7 +421,8 @@ for(condition in condition_to_validate){
     suppressWarnings(suppressMessages(
       ggsave(plot=plot_removed_replicas$plot,device = "pdf",
              filename = file.path(validation_output_dir,file_name),
-             height = height,width=width,units = "cm")
+             height = height,width=width,units = "cm"
+             )
     ))
   
     file_name <- paste("Validation_replicas_average_",condition,".pdf",sep="")
@@ -597,6 +598,7 @@ for(condition in other_conditions){
   # Save the plot
   file_name <- paste("Control_comparison_",condition,".pdf",sep="")
   suppressWarnings(suppressMessages(ggsave(plot=survival_comparison$plot,device = "pdf",
+                                           height = height,width=width,units = "cm",
                                            filename = file.path(comparison_output_dir,
                                                                 file_name))))
 }
@@ -648,6 +650,7 @@ survival_comparison <- ggsurvplot(fit,
 # Save the plot ----
 file_name <- "All_condition_comparison.pdf"
 suppressWarnings(suppressMessages(ggsave(plot=survival_comparison$plot,device = "pdf",
+                                         height = height,width=width,units = "cm",
                                          filename = file.path(comparison_output_dir,
                                                               file_name))))
 
@@ -714,6 +717,7 @@ if(length(other_conditions) > 1){
       # Save the plot
       file_name <- paste("Pairwise_comparison_",condition1,"_",condition2,".pdf",sep="")
       suppressWarnings(suppressMessages(ggsave(plot=survival_comparison$plot,device = "pdf",
+                                               height = height,width=width,units = "cm",
                                                filename = file.path(comparison_output_dir,
                                                                     file_name))))
     }
