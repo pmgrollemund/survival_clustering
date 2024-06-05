@@ -9,7 +9,6 @@
 #######              Control group: "Statut1_Cond" and other groups: "Statut2_Cond"
 #######              Also provides color (Couleur_Condition) and a numerical code (Num_Condition)
 ####### 2024-05-28 : v1.6, remove only problematic pairs "Puits"x"Replica"
-####### 2024-06-05 : v1.7, change legends for some plots
 ################################################################################
 ### Usage :
 # Be sure the folder of the script contains the file "Fiche_Comptage.ods"
@@ -40,7 +39,6 @@ data_sheet <- "Resultats"
 initialization_sheet <- "Initialisation"
 
 # Major options ----
-line_size <- 0.5 # tune the width of the line for the following plots
 threshold_pvalue <- 0.05 
 verbose <- TRUE # if TRUE, the script displays text
 height <- 10 ; width <- 20 # graphical options
@@ -49,7 +47,7 @@ height <- 10 ; width <- 20 # graphical options
 #\-----------------------------------------------------------------------------/
 
 # Verbose options 
-version <- "1.7"
+version <- "1.6"
 part <- paste(rep("-",50),collapse = "")
 section <- paste(rep("-",10),collapse = "")
 task <- paste(rep("-",2),collapse = "") 
@@ -138,7 +136,7 @@ make_transparent_palette <- function(color,n){
 }
 
 # Plot survival curves
-SurvPlot<-function(pv, fit, title, legendsTitle, legendsLabs, palette, xlim, breakTime,line_size)
+SurvPlot<-function(pv, fit, title, legendsTitle, legendsLabs, palette, xlim, breakTime)
 {
   p<-ggsurvplot(fit,
                 pval = pv,
@@ -158,9 +156,7 @@ SurvPlot<-function(pv, fit, title, legendsTitle, legendsLabs, palette, xlim, bre
                 break.time.by= breakTime,
                 font.x=c("bold"),
                 font.y=c("bold"),
-                font.tickslab=c("bold"),
-                size=line_size
-  )
+                font.tickslab=c("bold"))
   return(p)
 }
 
@@ -397,32 +393,28 @@ for(condition in condition_to_validate){
     fit <- survfit(Surv(Duree_de_Vie, Statut)~Puits+Replica, data=data_condition)
     time_max <- max(data_condition$Duree_de_Vie,na.rm=T)
     
-    plot_removed_replicas <- 
-      ggsurvplot(fit,
-                 legend="right",
-                 palette = palette,
-                 title = paste(condition,": Replicas validation"),
-                 conf.int = FALSE,
-                 xlab = "Time (Days)",
-                 legend.title = "Removed : red",
-                 # legend.labs = c("Removed","Keep"),
-                 ylab = "Survival probability",
-                 ggtheme = theme_bw(),
-                 xlim=c(0,time_max),
-                 break.time.by= 2,
-                 font.x=c("bold"),
-                 font.y=c("bold"),
-                 font.tickslab=c("bold"),
-                 size=line_size
-      )
+    plot_removed_replicas <- ggsurvplot(fit,
+                                        legend="right",
+                                        palette = palette,
+                                        title = paste(condition,": Replicas validation"),
+                                        conf.int = FALSE,
+                                        xlab = "Time (Days)",
+                                        legend.title = "Removed : red",
+                                        # legend.labs = c("Removed","Keep"),
+                                        ylab = "Survival probability",
+                                        ggtheme = theme_bw(),
+                                        xlim=c(0,time_max),
+                                        break.time.by= 2,
+                                        font.x=c("bold"),
+                                        font.y=c("bold"),
+                                        font.tickslab=c("bold"))
     
     fit <- survfit(Surv(Duree_de_Vie, Statut)~removed, data=data_condition)
     time_max <- max(data_condition$Duree_de_Vie,na.rm=T)
     
     title <- paste(condition,": Replication validation (average)")
     plot_removed_replicas_average <- 
-      SurvPlot(TRUE, fit, title,"", c("validated","removed"), 
-               c("gray","red"), time_max, 2,line_size = line_size)
+      SurvPlot(TRUE, fit, title,"", c("validated","removed"), c("gray","red"), time_max, 2)
     
     # Save the plots
     file_name <- paste("Validation_replicas_",condition,".pdf",sep="")
@@ -476,22 +468,19 @@ for(condition in conditions_to_treat){
   palette <- make_transparent_palette(color,length(fit$strata))
   
   # Plot the survival curves
-  survival_curves_condition <- 
-    ggsurvplot(fit,legend="none",
-               title = condition,
-               palette = palette,
-               pval.coord = c(time_max/2, 0.9),
-               conf.int = FALSE,
-               xlab = "Time (Days)",
-               ylab = "Survival probability",
-               ggtheme = theme_bw(),
-               xlim=c(0,time_max),
-               break.time.by= 2,
-               font.x=c("bold"),
-               font.y=c("bold"),
-               font.tickslab=c("bold"),
-               size=line_size
-    )
+  survival_curves_condition <- ggsurvplot(fit,legend="none",
+                                          title = condition,
+                                          palette = palette,
+                                          pval.coord = c(time_max/2, 0.9),
+                                          conf.int = FALSE,
+                                          xlab = "Time (Days)",
+                                          ylab = "Survival probability",
+                                          ggtheme = theme_bw(),
+                                          xlim=c(0,time_max),
+                                          break.time.by= 2,
+                                          font.x=c("bold"),
+                                          font.y=c("bold"),
+                                          font.tickslab=c("bold"))
   
   # Save the plot
   file_name <- paste("Survival_curves_",condition,".pdf",sep="")
@@ -577,8 +566,6 @@ for(condition in other_conditions){
   
   
   # Paste sample size and pvalue code to labels
-  sample_size_control_condition <- 
-    nrow(data_comparison[data_comparison$Souche == control_condition,])
   sample_size_condition <- nrow(data_comparison[data_comparison$Souche == condition,])
   pval <- survdiff(formula=Surv(Duree_de_Vie, Statut)~Souche, data=data_comparison)
   pval_code <- get_pvalue_code(pval$pvalue)
@@ -597,24 +584,16 @@ for(condition in other_conditions){
     paste(labels_order[labels_order != control_condition], 
           " (n=",sample_size_condition,") ",pval_code,sep="")
   
-  new_control_condition <- paste(labels_order[labels_order == control_condition], 
-                                 " (n=",sample_size_control_condition,")",sep="")
-  labels_order[labels_order == control_condition] <- new_control_condition  
-    
-  
   # Fit the condition comparison
-  data_comparison$Souche[data_comparison$Souche %in% condition] <- labels_order[labels_order != new_control_condition]
-  data_comparison$Souche[data_comparison$Souche %in% control_condition] <- labels_order[labels_order == new_control_condition]
+  data_comparison$Souche[data_comparison$Souche %in% condition] <- labels_order[labels_order != control_condition]
   data_comparison$Souche <- factor(data_comparison$Souche,levels=labels_order)
   fit <- survfit(Surv(Duree_de_Vie, Statut)~Souche, data=data_comparison)
   time_max <- max(data_comparison$Duree_de_Vie,na.rm=T)
   title <- paste(condition, " x ",control_condition,sep="")
   
   # Plot the survival curves
-  survival_comparison <- suppressWarnings(
-    SurvPlot(TRUE, fit, title,"Condition", labels_order, 
-             palette, time_max, 2,line_size)
-  )
+  survival_comparison <- 
+    SurvPlot(TRUE, fit, title,"Condition", labels_order, palette, time_max, 2)
   
   # Save the plot
   file_name <- paste("Control_comparison_",condition,".pdf",sep="")
@@ -643,37 +622,30 @@ color_labels_order$new_label <- labels_order
 data_tmp <- data
 for(condition in other_conditions)
   data_tmp$Souche[data$Souche %in% condition] <- color_labels_order$new_label[color_labels_order$Nom_Condition==condition]
-data_tmp$Souche[ data_tmp$Souche %in% control_condition ] <- 
-  new_control_condition
-labels_order[labels_order == control_condition] <- new_control_condition  
-
 data_tmp$Souche <- factor(data_tmp$Souche,levels=labels_order)
 fit <- survfit(Surv(Duree_de_Vie, Statut)~Souche, data=data_tmp)
 time_max <- max(data_tmp$Duree_de_Vie,na.rm=T)
 title <- "All conditions"
 
 # Plot the survival curves ----
-survival_comparison <- 
-  ggsurvplot(fit,
-             legend=c(0.85,0.65),
-             title = title,
-             palette=palette,
-             pval.coord = c(time_max/2, 0.9),
-             conf.int = FALSE,
-             xlab = "Time (Days)",
-             ylab = "Survival probability",
-             legend.title = "Condition",
-             legend.labs = labels_order,
-             ggtheme = theme_bw(),
-             xlim=c(0,time_max),
-             surv.median.line = 'hv',
-             break.time.by= 2,
-             font.x=c("bold"),
-             font.y=c("bold"),
-             font.tickslab=c("bold"),
-             data=data,
-             size=line_size
-  )
+survival_comparison <- ggsurvplot(fit,
+                                  legend=c(0.85,0.65),
+                                  title = title,
+                                  palette=palette,
+                                  pval.coord = c(time_max/2, 0.9),
+                                  conf.int = FALSE,
+                                  xlab = "Time (Days)",
+                                  ylab = "Survival probability",
+                                  legend.title = "Condition",
+                                  legend.labs = labels_order,
+                                  ggtheme = theme_bw(),
+                                  xlim=c(0,time_max),
+                                  surv.median.line = 'hv',
+                                  break.time.by= 2,
+                                  font.x=c("bold"),
+                                  font.y=c("bold"),
+                                  font.tickslab=c("bold"),
+                                  data=data)
 
 # Save the plot ----
 file_name <- "All_condition_comparison.pdf"
@@ -740,8 +712,7 @@ if(length(other_conditions) > 1){
       
       # Plot the survival curves
       survival_comparison <- 
-        SurvPlot(TRUE, fit, title,"Condition", labels, 
-                 palette, time_max, 2,line_size)
+        SurvPlot(TRUE, fit, title,"Condition", labels, palette, time_max, 2)
       
       # Save the plot
       file_name <- paste("Pairwise_comparison_",condition1,"_",condition2,".pdf",sep="")
