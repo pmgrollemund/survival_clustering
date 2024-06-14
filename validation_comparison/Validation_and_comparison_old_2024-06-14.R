@@ -1,28 +1,22 @@
 ################################################################################
 ################ Replica validation
 ####### Paul-Marie Grollemund
-####### Muriel Bonnet, Guy Febvre
-####### Franck Peyre, Vincent Romera 
-####### 20??-??-?? : first implementation 
+####### Franck Peyre et others ancient interns 
+####### 20??-??-?? : first implementation
 ####### 2022-06-22 : v1.4, replica validation
-#######                shows sample sizes, and provides "*"-code according to the p-value
+#######              shows sample sizes, and provides "*"-code according to the p-value
 ####### 2022-06-30 : v1.5, works with an additional sheet "initialisation"
-#######                Control group: "Statut1_Cond" and other groups: "Statut2_Cond"
-#######                Also provides color (Couleur_Condition) and a numerical code (Num_Condition)
-####### 2024-05-28 : v2.0, program redesign
-#######                remove only problematic pairs "Puits"x"Replica"
-####### 2024-06-05 : v2.0.1, change legends for some plots
-####### 2024-06-10 : v2.0.2, Add function for removing special characters in file 
-#######                name and add of Axis X name and step in "TO BE CHANGED"
-####### 2024-06-14 : v2.1.0, include option in the data file
+#######              Control group: "Statut1_Cond" and other groups: "Statut2_Cond"
+#######              Also provides color (Couleur_Condition) and a numerical code (Num_Condition)
+####### 2024-05-28 : v1.6, remove only problematic pairs "Puits"x"Replica"
+####### 2024-06-05 : v1.7, change legends for some plots
 ################################################################################
 ### Usage :
 # Be sure the folder of the script contains the file "Fiche_Comptage.ods"
-#    This file must consists of the sheets: "Resultats", "Initialisation" and 
-#    "Options".
+#    This file must consists of the sheets: "Resultats" and "Initialisation"
 # Can also be run throught terminal with the Rscript command 
 ################################################################################
-  
+
 ################################################################################
 #### Clean up ----
 ################################################################################
@@ -44,50 +38,22 @@ if(!is.null(wd)) setwd(wd)
 data_file_name <- "../data/random_survival.ods"
 data_sheet <- "Resultats"
 initialization_sheet <- "Initialisation"
-option_sheet <- "Options"
+
+# Major options ----
+line_size <- 0.5 # tune the width of the line for the following plots
+threshold_pvalue <- 0.05 
+verbose <- TRUE # if TRUE, the script displays text
+height <- 10 ; width <- 20 # graphical options
 #/-----------------------------------------------------------------------------\
 #------------ END : TO BE CHANGED
 #\-----------------------------------------------------------------------------/
 
 # Verbose options 
-version <- "2.1.0"
+version <- "1.7"
 part <- paste(rep("-",50),collapse = "")
 section <- paste(rep("-",10),collapse = "")
 task <- paste(rep("-",2),collapse = "") 
 subtask <-  paste(rep("-",1),collapse = "")
-
-# Major options ----
-default_option <- data.frame(
-  line_size = 0.5,
-  threshold_pvalue = 0.05,
-  verbose = TRUE,
-  height = 10,
-  width = 20,
-  breakTime = 2,
-  max_x_ticks = 60,
-  graphics_title_comparison = "Comparison of all conditions",
-  xlab = "Time (Day)",
-  ylab = "Survival probability"
-)
-
-# Import data
-options <- readODS::read_ods(path = data_file_name, sheet = option_sheet,skip = 1)
-
-# Assign values
-for(i in 1:nrow(options)){
-  assign(options$Nom[i],options$Valeur[i])
-}
-
-# Assign default values if values are not provided 
-for(i in 1:length(default_option)){
-  if( !exists(names(default_option)[i]) ){
-    assign(names(default_option)[i],default_option[[i]])
-  }else{
-    if( is.na(get(names(default_option)[i])) ){
-      assign(names(default_option)[i],default_option[[i]])
-    }
-  }
-}
 
 # Launch ----
 if(verbose)
@@ -128,12 +94,6 @@ if(!dir.exists(comparison_output_dir))
 
 # Required functions ----
 if(verbose) cat(task,"Import functions \n")
-
-# Removing special characters
-clean_filename <- function(filename) {
-  cleaned <- gsub("[^[:alnum:]_]", "_", filename)
-  return(cleaned)
-}
 
 # "replica_structure" is an object informing about the strata "Replica x Puits"
 # the following function enables to change this object according to which 
@@ -178,8 +138,7 @@ make_transparent_palette <- function(color,n){
 }
 
 # Plot survival curves
-SurvPlot<-function(pv, fit, title, legendsTitle, legendsLabs, palette, xlim, 
-                   breakTime,line_size,xlab,ylab)
+SurvPlot<-function(pv, fit, title, legendsTitle, legendsLabs, palette, xlim, breakTime,line_size)
 {
   p<-ggsurvplot(fit,
                 pval = pv,
@@ -187,8 +146,8 @@ SurvPlot<-function(pv, fit, title, legendsTitle, legendsLabs, palette, xlim,
                 pval.coord = c(xlim/2, 0.9),
                 conf.int = FALSE,
                 title = title,
-                xlab = xlab,
-                ylab = ylab,
+                xlab = "Time (Days)",
+                ylab = "Survival probability",
                 surv.median.line = 'hv',
                 ggtheme = theme_bw(),
                 legend.title = legendsTitle,
@@ -429,11 +388,10 @@ for(condition in condition_to_validate){
     if(verbose) cat(message_tmp)
     
     # Plot the survival curves to check 
-    n_replica_structure <- length(unlist(replica_structure))
     tmp <- which( !is.na(unlist(replica_structure)))
-    palette <- rep("red",n_replica_structure)
+    palette <- rep("red",12)
     palette[tmp] <- "gray"
-    labs <- rep("removed",n_replica_structure)
+    labs <- rep("removed",12)
     labs[tmp] <- "validated"
     
     fit <- survfit(Surv(Duree_de_Vie, Statut)~Puits+Replica, data=data_condition)
@@ -445,13 +403,13 @@ for(condition in condition_to_validate){
                  palette = palette,
                  title = paste(condition,": Replicas validation"),
                  conf.int = FALSE,
-                 xlab = xlab,
+                 xlab = "Time (Days)",
                  legend.title = "Removed : red",
                  # legend.labs = c("Removed","Keep"),
-                 ylab = ylab,
+                 ylab = "Survival probability",
                  ggtheme = theme_bw(),
                  xlim=c(0,time_max),
-                 break.time.by= breakTime,
+                 break.time.by= 2,
                  font.x=c("bold"),
                  font.y=c("bold"),
                  font.tickslab=c("bold"),
@@ -464,12 +422,10 @@ for(condition in condition_to_validate){
     title <- paste(condition,": Replication validation (average)")
     plot_removed_replicas_average <- 
       SurvPlot(TRUE, fit, title,"", c("validated","removed"), 
-               c("gray","red"), time_max, breakTime,line_size = line_size,
-               xlab,ylab
-               )
+               c("gray","red"), time_max, 2,line_size = line_size)
     
     # Save the plots
-    file_name <- paste("Validation_replicas_",clean_filename(condition),".pdf",sep="") #Add of use of removing special characters function
+    file_name <- paste("Validation_replicas_",condition,".pdf",sep="")
     suppressWarnings(suppressMessages(
       ggsave(plot=plot_removed_replicas$plot,device = "pdf",
              filename = file.path(validation_output_dir,file_name),
@@ -477,7 +433,7 @@ for(condition in condition_to_validate){
              )
     ))
   
-    file_name <- paste("Validation_replicas_average_",clean_filename(condition),".pdf",sep="") #Add of use of removing special characters function
+    file_name <- paste("Validation_replicas_average_",condition,".pdf",sep="")
     suppressWarnings(suppressMessages(
       ggsave(plot=plot_removed_replicas_average$plot,device = "pdf",
              filename = file.path(validation_output_dir,file_name),
@@ -526,11 +482,11 @@ for(condition in conditions_to_treat){
                palette = palette,
                pval.coord = c(time_max/2, 0.9),
                conf.int = FALSE,
-               xlab = xlab,
-               ylab = ylab,
+               xlab = "Time (Days)",
+               ylab = "Survival probability",
                ggtheme = theme_bw(),
                xlim=c(0,time_max),
-               break.time.by= breakTime,
+               break.time.by= 2,
                font.x=c("bold"),
                font.y=c("bold"),
                font.tickslab=c("bold"),
@@ -538,7 +494,7 @@ for(condition in conditions_to_treat){
     )
   
   # Save the plot
-  file_name <- paste("Survival_curves_",clean_filename(condition),".pdf",sep="") #Add of use of removing special characters function
+  file_name <- paste("Survival_curves_",condition,".pdf",sep="")
   suppressWarnings(suppressMessages(
     ggsave(plot=survival_curves_condition$plot,device = "pdf",
            filename = file.path(survival_curves_output_dir,file_name),
@@ -657,12 +613,11 @@ for(condition in other_conditions){
   # Plot the survival curves
   survival_comparison <- suppressWarnings(
     SurvPlot(TRUE, fit, title,"Condition", labels_order, 
-             palette, time_max, breakTime,line_size,
-             xlab,ylab)
+             palette, time_max, 2,line_size)
   )
   
   # Save the plot
-  file_name <- paste("Control_comparison_",clean_filename(condition),".pdf",sep="") #Add of use of removing special characters function
+  file_name <- paste("Control_comparison_",condition,".pdf",sep="")
   suppressWarnings(suppressMessages(ggsave(plot=survival_comparison$plot,device = "pdf",
                                            height = height,width=width,units = "cm",
                                            filename = file.path(comparison_output_dir,
@@ -695,23 +650,24 @@ labels_order[labels_order == control_condition] <- new_control_condition
 data_tmp$Souche <- factor(data_tmp$Souche,levels=labels_order)
 fit <- survfit(Surv(Duree_de_Vie, Statut)~Souche, data=data_tmp)
 time_max <- max(data_tmp$Duree_de_Vie,na.rm=T)
+title <- "All conditions"
 
 # Plot the survival curves ----
 survival_comparison <- 
   ggsurvplot(fit,
              legend=c(0.85,0.65),
-             title = graphics_title_comparison,
+             title = title,
              palette=palette,
              pval.coord = c(time_max/2, 0.9),
              conf.int = FALSE,
-             xlab = xlab,
-             ylab = ylab,
+             xlab = "Time (Days)",
+             ylab = "Survival probability",
              legend.title = "Condition",
              legend.labs = labels_order,
              ggtheme = theme_bw(),
              xlim=c(0,time_max),
              surv.median.line = 'hv',
-             break.time.by= breakTime,
+             break.time.by= 2,
              font.x=c("bold"),
              font.y=c("bold"),
              font.tickslab=c("bold"),
@@ -782,17 +738,13 @@ if(length(other_conditions) > 1){
       palette <- palette[order(labels)]
       labels <- sort(labels)
       
-      if(time_max / breakTime > max_x_ticks)
-        breakTime <- ceiling(time_max/max_x_ticks)
-      
       # Plot the survival curves
       survival_comparison <- 
         SurvPlot(TRUE, fit, title,"Condition", labels, 
-                 palette, time_max, breakTime,line_size,
-                 xlab,ylab)
+                 palette, time_max, 2,line_size)
       
       # Save the plot
-      file_name <- paste("Pairwise_comparison_",clean_filename(condition1),"_",condition2,".pdf",sep="")
+      file_name <- paste("Pairwise_comparison_",condition1,"_",condition2,".pdf",sep="")
       suppressWarnings(suppressMessages(ggsave(plot=survival_comparison$plot,device = "pdf",
                                                height = height,width=width,units = "cm",
                                                filename = file.path(comparison_output_dir,
