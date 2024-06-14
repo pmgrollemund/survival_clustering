@@ -22,7 +22,7 @@
 #    "Options".
 # Can also be run throught terminal with the Rscript command 
 ################################################################################
-  
+
 ################################################################################
 #### Clean up ----
 ################################################################################
@@ -88,6 +88,7 @@ for(i in 1:length(default_option)){
     }
   }
 }
+breakTime_save <- breakTime
 
 # Launch ----
 if(verbose)
@@ -289,9 +290,9 @@ if("to_validate" %in% colnames(init)){
   if(length(condition_to_not_validate)>0){
     message_tmp <- "\t The following condition will not be validated:"
     message_tmp <- paste(message_tmp,
-                     paste("\n\t\t",condition_to_not_validate,collapse=""),
-                     "\n",
-                     sep="")
+                         paste("\n\t\t",condition_to_not_validate,collapse=""),
+                         "\n",
+                         sep="")
     
     if(verbose) cat(message_tmp)
   }
@@ -439,6 +440,12 @@ for(condition in condition_to_validate){
     fit <- survfit(Surv(Duree_de_Vie, Statut)~Puits+Replica, data=data_condition)
     time_max <- max(data_condition$Duree_de_Vie,na.rm=T)
     
+    if(time_max / breakTime > max_x_ticks){
+      breakTime <- ceiling(time_max/max_x_ticks)
+    }else{
+      breakTime <- breakTime_save
+    }
+    
     plot_removed_replicas <- 
       ggsurvplot(fit,
                  legend="right",
@@ -461,12 +468,18 @@ for(condition in condition_to_validate){
     fit <- survfit(Surv(Duree_de_Vie, Statut)~removed, data=data_condition)
     time_max <- max(data_condition$Duree_de_Vie,na.rm=T)
     
+    if(time_max / breakTime > max_x_ticks){
+      breakTime <- ceiling(time_max/max_x_ticks)
+    }else{
+      breakTime <- breakTime_save
+    }
+    
     title <- paste(condition,": Replication validation (average)")
     plot_removed_replicas_average <- 
       SurvPlot(TRUE, fit, title,"", c("validated","removed"), 
                c("gray","red"), time_max, breakTime,line_size = line_size,
                xlab,ylab
-               )
+      )
     
     # Save the plots
     file_name <- paste("Validation_replicas_",clean_filename(condition),".pdf",sep="") #Add of use of removing special characters function
@@ -474,9 +487,9 @@ for(condition in condition_to_validate){
       ggsave(plot=plot_removed_replicas$plot,device = "pdf",
              filename = file.path(validation_output_dir,file_name),
              height = height,width=width,units = "cm"
-             )
+      )
     ))
-  
+    
     file_name <- paste("Validation_replicas_average_",clean_filename(condition),".pdf",sep="") #Add of use of removing special characters function
     suppressWarnings(suppressMessages(
       ggsave(plot=plot_removed_replicas_average$plot,device = "pdf",
@@ -510,6 +523,13 @@ message_survival_curve <- NULL
 # Get survival curves ----
 # For each experimental conditions
 time_max <- max(data$Duree_de_Vie,na.rm = T)+1
+
+if(time_max / breakTime > max_x_ticks){
+  breakTime <- ceiling(time_max/max_x_ticks)
+}else{
+  breakTime <- breakTime_save
+}
+
 for(condition in conditions_to_treat){
   
   # Get data about this condition 
@@ -644,7 +664,7 @@ for(condition in other_conditions){
   new_control_condition <- paste(labels_order[labels_order == control_condition], 
                                  " (n=",sample_size_control_condition,")",sep="")
   labels_order[labels_order == control_condition] <- new_control_condition  
-    
+  
   
   # Fit the condition comparison
   data_comparison$Souche[data_comparison$Souche %in% condition] <- labels_order[labels_order != new_control_condition]
@@ -653,6 +673,12 @@ for(condition in other_conditions){
   fit <- survfit(Surv(Duree_de_Vie, Statut)~Souche, data=data_comparison)
   time_max <- max(data_comparison$Duree_de_Vie,na.rm=T)
   title <- paste(condition, " x ",control_condition,sep="")
+  
+  if(time_max / breakTime > max_x_ticks){
+    breakTime <- ceiling(time_max/max_x_ticks)
+  }else{
+    breakTime <- breakTime_save
+  }
   
   # Plot the survival curves
   survival_comparison <- suppressWarnings(
@@ -696,6 +722,12 @@ data_tmp$Souche <- factor(data_tmp$Souche,levels=labels_order)
 fit <- survfit(Surv(Duree_de_Vie, Statut)~Souche, data=data_tmp)
 time_max <- max(data_tmp$Duree_de_Vie,na.rm=T)
 
+if(time_max / breakTime > max_x_ticks){
+  breakTime <- ceiling(time_max/max_x_ticks)
+}else{
+  breakTime <- breakTime_save
+}
+
 # Plot the survival curves ----
 survival_comparison <- 
   ggsurvplot(fit,
@@ -734,7 +766,7 @@ message_control_comparison <- NULL
 
 other_conditions <- init$Nom_Condition[
   init$Statut2_Condition == 1 & init$Statut1_Condition == 1
-  ]
+]
 new_other_conditions <- color_labels_order$new_label[color_labels_order$Nom_Condition %in% other_conditions]
 
 if(length(other_conditions) > 1){
@@ -782,8 +814,11 @@ if(length(other_conditions) > 1){
       palette <- palette[order(labels)]
       labels <- sort(labels)
       
-      if(time_max / breakTime > max_x_ticks)
+      if(time_max / breakTime > max_x_ticks){
         breakTime <- ceiling(time_max/max_x_ticks)
+      }else{
+        breakTime <- breakTime_save
+      }
       
       # Plot the survival curves
       survival_comparison <- 
