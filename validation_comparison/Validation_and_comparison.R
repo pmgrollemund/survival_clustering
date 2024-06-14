@@ -64,6 +64,7 @@ default_option <- data.frame(
   height = 10,
   width = 20,
   breakTime = 2,
+  max_breakTime = 60,
   max_x_ticks = 60,
   graphics_title_comparison = "Comparison of all conditions",
   xlab = "Time (Day)",
@@ -88,6 +89,7 @@ for(i in 1:length(default_option)){
     }
   }
 }
+if(breakTime > max_breakTime) breakTime  <- max_breakTime
 breakTime_save <- breakTime
 
 # Launch ----
@@ -441,7 +443,7 @@ for(condition in condition_to_validate){
     time_max <- max(data_condition$Duree_de_Vie,na.rm=T)
     
     if(time_max / breakTime > max_x_ticks){
-      breakTime <- ceiling(time_max/max_x_ticks)
+      breakTime <- min(max_breakTime, ceiling(time_max/max_x_ticks))
     }else{
       breakTime <- breakTime_save
     }
@@ -469,7 +471,7 @@ for(condition in condition_to_validate){
     time_max <- max(data_condition$Duree_de_Vie,na.rm=T)
     
     if(time_max / breakTime > max_x_ticks){
-      breakTime <- ceiling(time_max/max_x_ticks)
+      breakTime <- min(max_breakTime, ceiling(time_max/max_x_ticks))
     }else{
       breakTime <- breakTime_save
     }
@@ -525,7 +527,7 @@ message_survival_curve <- NULL
 time_max <- max(data$Duree_de_Vie,na.rm = T)+1
 
 if(time_max / breakTime > max_x_ticks){
-  breakTime <- ceiling(time_max/max_x_ticks)
+  breakTime <- min(max_breakTime, ceiling(time_max/max_x_ticks))
 }else{
   breakTime <- breakTime_save
 }
@@ -675,7 +677,7 @@ for(condition in other_conditions){
   title <- paste(condition, " x ",control_condition,sep="")
   
   if(time_max / breakTime > max_x_ticks){
-    breakTime <- ceiling(time_max/max_x_ticks)
+    breakTime <- min(max_breakTime, ceiling(time_max/max_x_ticks))
   }else{
     breakTime <- breakTime_save
   }
@@ -723,7 +725,7 @@ fit <- survfit(Surv(Duree_de_Vie, Statut)~Souche, data=data_tmp)
 time_max <- max(data_tmp$Duree_de_Vie,na.rm=T)
 
 if(time_max / breakTime > max_x_ticks){
-  breakTime <- ceiling(time_max/max_x_ticks)
+  breakTime <- min(max_breakTime, ceiling(time_max/max_x_ticks))
 }else{
   breakTime <- breakTime_save
 }
@@ -815,7 +817,7 @@ if(length(other_conditions) > 1){
       labels <- sort(labels)
       
       if(time_max / breakTime > max_x_ticks){
-        breakTime <- ceiling(time_max/max_x_ticks)
+        breakTime <- min(max_breakTime, ceiling(time_max/max_x_ticks))
       }else{
         breakTime <- breakTime_save
       }
